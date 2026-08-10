@@ -10,8 +10,15 @@ history cannot be un-published — anyone who has ever cloned this repo, or seen
 it on a build agent, still has them.
 
 Blanking the files stops the *next* secret from being committed. Only revoking
-each value at its provider makes the old one worthless. Until you do the table
-below, treat every credential in this repo's history as compromised.
+each value at its provider makes the old one worthless. Until you have worked
+through the runbook below, treat every credential in this repo's history as
+compromised.
+
+That got more pressing, not less, when the code was mirrored to a public
+GitHub repository. The mirror is a snapshot with no history precisely so these
+values did not travel — but the infrastructure they unlock is now easy to find
+from public source, so the window between "someone reads the code" and
+"someone tries the credentials" is shorter than it was.
 
 Rewriting history is not the fix and is not recommended here: it would break
 every clone of a shared repository, and the values would still exist in old
@@ -46,39 +53,113 @@ The API refuses to start without `Secret` and `ConnectionStrings:Postgre`, and
 logs a `[config]` line at boot for each missing optional one. That check is
 `Vegetable.API/Configuration/RequiredSecrets.cs`.
 
-## What to revoke, and where
+## Rotation runbook
 
-| Credential | Provider | Notes |
-|---|---|---|
-| `Secret` (JWT signing) | ours — just generate one | **See the warning below.** 64+ random chars. |
-| `ConnectionStrings:Postgre` | Postgres on 84.201.169.106 | `ALTER USER postgres WITH PASSWORD ...`. The same password was used for prod and dev. |
-| `Auth0:UserClientSecret` | Auth0 dashboard | Applications → the machine-to-machine app → Rotate. |
-| `GreenSms:Pass` | GreenSms account | **Prioritise this.** It sends the SMS login codes; an attacker can burn the balance or harvest codes. |
-| `YandexStorage:AccessKey` / `SecretKey` | Yandex Cloud IAM | Delete the static access key, make a new one. One key pair was shared across Local, Development *and* Production. |
-| `BotConfiguration:BotToken` | Telegram @BotFather | `/revoke` then `/token`. Separate tokens for prod and dev. |
-| `Google:Secret` | Google reCAPTCHA admin | Server-side secret for the site key. The *site* key is public and lives in the web apps; only this one is secret. |
-| `GeTuiPushOptions:MasterSecret` | GeTui console | Only matters while `PushProvider` is `GeTui`. |
-| `Payment:TerminalKey` / `TerminalPassword` | Tinkoff merchant portal | The committed values were the public demo terminal, but rotate whatever production uses. |
+Work down this list. It is ordered by exposure divided by disruption — the
+cheap, high-value ones first, the two that need a maintenance window last.
 
-## Rotating `Secret` logs everyone out
+Each value goes into the environment, never back into a file. Locally that is
+`dotnet user-secrets`; on the server it is the app pool's environment
+variables, or `-e` on the container.
 
-`Secret` signs the auth tokens. `JwtMiddleware` validates against it and
-`AuthenticationService` mints with it, and those tokens are issued with a **ten
-year** lifetime, which the mobile app stores and reuses.
+After each one, restart and check the boot log: a `[config]` line means that
+key is still missing.
 
-Change it and every token ever issued stops validating. Every user — mobile and
-admin — is signed out and has to log in again, which for mobile means receiving
-an SMS code. That is a support event, not a deploy detail: plan when it happens
-and expect the SMS bill.
+### 1. GreenSms — `GreenSms__Pass`
 
-It is still the most important one to rotate, because anyone holding it can mint
-a valid token for any owner id and walk straight past `[AuthorizeOwner]`. There
-is no way to have that both ways; pick a time.
+Do this one first. It sends the SMS login codes, so a leaked password means
+someone else's messages on your balance, and sight of the codes themselves.
 
-If you want to avoid the mass logout, the alternative is a code change:
-accept two signing keys during a transition window, minting with the new one
-and validating against either, then drop the old key once the tokens have
-turned over. That is real work and nobody has done it here.
+Change the account password in the GreenSms dashboard, set `GreenSms__Pass`,
+restart. Login is broken between those two steps, so it is quick but not
+zero-downtime.
+
+### 2. Google reCAPTCHA — `Google__Secret`
+
+Regenerate the secret for the site key in the reCAPTCHA admin console. The
+*site* key is public and lives in the web apps; only this one is secret.
+
+Until it is set, `QueryTokenFilter` rejects every public booking with 401 —
+the site loads and cannot take a reservation.
+
+### 3. Yandex Object Storage — `YandexStorage__AccessKey`, `YandexStorage__SecretKey`
+
+The only one that rotates with no downtime: create a second static access key
+in Yandex Cloud IAM, set both variables, restart, confirm an image upload
+works, then delete the old key.
+
+One pair was shared across Local, Development and Production. Issue three.
+
+### 4. Telegram — `BotConfiguration__BotToken`
+
+`/revoke` then `/token` in @BotFather. The bot stops delivering between the
+revoke and the restart, and reminder notifications go with it.
+
+Production and development have separate bots and separate tokens; do both.
+
+### 5. Auth0 — `Auth0__UserClientSecret`
+
+Applications → the machine-to-machine app → rotate the client secret.
+
+Only the user-management calls use it, so the blast radius is smaller than it
+looks — the mobile and admin login paths do not go through Auth0.
+
+### 6. GeTui — `GeTuiPushOptions__MasterSecret`
+
+Only matters while `PushProvider` is `GeTui`. Once the Capacitor build is what
+people are running and the setting flips to `Fcm`, this credential stops being
+live and can be retired rather than rotated.
+
+### 7. Postgres — `ConnectionStrings__Postgre`
+
+Needs a window. The same password was used for the production and development
+databases, so both connection strings change.
+
+```sql
+ALTER USER postgres WITH PASSWORD '…';
+```
+
+Then update the variable everywhere the API and the Workers host run, and
+restart both. The Workers project reads the API's appsettings, so it needs the
+same environment.
+
+### 8. `Secret` — the JWT signing key. Schedule this one.
+
+Everything else on this list is an outage of seconds. This one signs out every
+user, because `JwtMiddleware` validates HS256 against it and tokens are issued
+with a **ten year** lifetime. The mobile app stores one; re-authenticating
+means an SMS to every active user.
+
+Measured against a running API rather than assumed: with the key rotated, a
+token issued under the old one gets 401, and one minted under the new key gets
+200. There is no grace period.
+
+Generate 64 random bytes; do not reuse anything that has appeared in a chat
+log, an issue, or this file:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(64).toString('base64url'))"
+```
+
+It is still the most important value here — anyone holding it can mint a token
+for any owner id and walk past `[AuthorizeOwner]` entirely. Pick a quiet hour,
+warn support, and expect the SMS bill.
+
+If the mass logout is unacceptable, the alternative is a code change: accept
+two signing keys during a transition window, mint with the new one and validate
+against either, then drop the old once the tokens have turned over. That is
+real work and nobody has done it.
+
+### Afterwards
+
+The old values stay in the Azure DevOps history — nine commits carry the
+production database password alone. Rotation is what makes that history
+harmless; there is no need to rewrite it, and rewriting would break every clone
+while the values survived in the old ones anyway.
+
+Once this list is done, the history stops being sensitive and can be brought
+across to the public GitHub repository, which currently holds a snapshot for
+exactly this reason.
 
 ## Two test back doors, now closed by default
 
