@@ -1,0 +1,20 @@
+﻿First of all be sure that configured router to expose your local computer to Internet
+    rough steps:
+        -reserve some ip for your machine by MAC address (to be sure that your IP not changing in future)
+        -add virtual server in NAT settings and pass 80 and 433 ports to reserver IP from previous step 
+
+Check your external IP (https://2ip.ru/)
+Install OpenSSL (it should be on you machine, just check path C:\Program Files\Git\usr\bin\)
+To create cert execute following in CMD:
+
+    openssl req -newkey rsa:2048 -sha256 -nodes -keyout PRIVATE.key -x509 -days 365 -out PUBLIC.pem -subj "/C=NG/ST=Lagos/L=Lagos/O=BUSYCARROT/CN=!!!!{Your external IP HERE}!!!!"
+            //for example: openssl req -newkey rsa:2048 -sha256 -nodes -keyout PRIVATE.key -x509 -days 365 -out PUBLIC.pem -subj "/C=NG/ST=Lagos/L=Lagos/O=BUSYCARROT/CN=5.79.133.1"
+
+    openssl pkcs12 -inkey PRIVATE.key -in PUBLIC.pem -export -out PUBLIC.pfx
+
+Then go to IIS->{server name in tree menu}->Certeficates-> Import(on right panel) and import PFX file.
+Set imported certificate to site which used for API (in my case Default Web Site)
+
+Update appsettings.json : 
+    "SetWebhook": true,
+    "CertPath": "Path to PUBLIC.pem file"

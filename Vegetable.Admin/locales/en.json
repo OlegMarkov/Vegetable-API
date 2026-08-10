@@ -1,0 +1,85 @@
+{
+  "main":  {
+    "title": "Admin"
+  },
+  "calendar": {
+    "title": "Calendar",
+    "type-month": "Month",
+    "type-week": "Week",
+    "type-day": "Day"
+  },
+  "login": {
+    "title": "Vegetable",
+    "subtitle": "online booking admin site"
+  },
+  "user": {
+    "logout": "logout",
+    "invite-link": "copy invite link"
+  },
+  "general-settings": {
+    "title": "General Settings",
+    "company-information": "Company Information",
+    "addresses": "Addresses",
+    "account": "Account",
+    "subscription": "Subscription",
+    "alias": "Alias:",
+    "alias-description": "Alias is used in your personal web site URL as identificator. For example http://vegetable.com/[alias]",
+    "company-title": "Title:",
+    "company-title-description": "Your company/business title. Will be displayed in your personal web site.",
+    "company-description": "Description:",
+    "company-description-description": "Your company/business description. Will be displayed in your personal web site.",
+    "turn-on-personal-web-site": "Turn on personal web site:",
+    "turn-on-personal-web-site-description": "If enabled your personal web site with booking option will be available by http://vegetable.com/[alias] URL.",
+    "personal-web-site": "Personal web site:",
+    "personal-web-site-description": "Yor personla web site URL. Site where your clients can book you based on your schedule.",
+    "invite-link": "Invite Link:",
+    "invite-link-description": "Copy the link to employes, persons. After registration employee will have access to your Admin site.",
+    "address-edit": "Edit",
+    "address-delete": "Delete",
+    "address-description": "Description",
+    "address-state": "State",
+    "address-city": "City",
+    "address-postalcode": "PostalCode",
+    "address-street": "Street",
+    "address-unit": "Unit",
+    "address-add": "add new address",
+    "account-title": "Account:",
+    "logout": "logout",
+    "save": "Save",
+    "validation-summary": "Please fix all errors before save!",
+    "snackbar-saved": "Saved",
+    "snackbar-close": "Close"
+  },
+  "services": {
+    "title": "Services",
+    "service-title": "Title",
+    "service-title-description": "The name of the service you provide. This is the name that the user will see",
+    "service-description": "Description",
+    "service-description-description": "Write a few words about this service. Additional information may be helpful to the сclient.",
+    "service-duration": "Duration",
+    "service-duration-description": "Please note that time is indicated in minutes.",
+    "service-cost": "Cost",
+    "service-color": "Color"   
+  },
+  "employee": {
+    "title": "Employees",
+    "employee-title": "Employee",
+    "employee-save": "Save",
+    "employee-firstName": "First Name",
+    "employee-firstName-description": "",
+    "employee-lastName": "Last Name",
+    "employee-lastName-description": "",
+    "employee-description": "Description",
+    "employee-description-description": "Here you can specify some description of the employee (position, level, etc.)",
+    "employee-availableServices": "Available Services",
+    "employee-availableServices-description": "Choose the services that this employee can perform.",
+    "service-duration": "Duration",
+    "service-duration-description": "Please note that time is indicated in minutes.",
+    "service-cost": "Cost",
+    "service-color": "Color"   
+  },
+  "validation": {
+    "required": "Required",
+    "maxLength": "Max length exceeded"
+  }
+}

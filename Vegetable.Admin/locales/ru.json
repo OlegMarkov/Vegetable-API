@@ -1,0 +1,95 @@
+{
+  "main":  {
+    "title": "Кабинет"
+  },
+  "calendar": {
+    "title": "Календарь",
+    "type-month": "Месяц",
+    "type-week": "Неделя",
+    "type-day": "День"
+  },
+  "login": {
+    "title": "Овощ",
+    "subtitle": "админ сайт для онлайн-бронирования"
+  },
+  "user": {
+    "logout": "выйти",
+    "invite-link": "скопировать ссылку для приглашения"
+  },
+  "general-settings": {
+    "title": "Общие Настройки",
+    "company-information": "Информация о компании",    
+    "addresses": "Адреса",
+    "account": "Учетная запись",
+    "subscription": "Подписка",
+    "alias": "Идентификатор:",
+    "alias-description": "Идентификатор используется для ссылки на персональном сайте. Например, http://vegetable.com/[Идентификатор]",
+    "company-title": "Название:",
+    "company-title-description": "Название компании или бизнеса. Будет отображаться на персональном сайте.",
+    "company-description": "Описание:",
+    "company-description-description": "Описание компании или бизнеса. Будет отображаться на персональном сайте.",
+    "turn-on-personal-web-site": "Включить персональный сайт:",
+    "turn-on-personal-web-site-description": "Если включен, Ваш персональный сайт с функцией онлайн бронирования будет доступен по ссылке http://vegetable.com/[alias].",
+    "personal-web-site": "Персональный сайт:",
+    "personal-web-site-description": "Ссылка на Ваш персональный сайт.Сайте где клиенты могут бронировать Ваши услуги на основе Вашего графика.",
+    "invite-link": "Ссылка для приглашения:",
+    "invite-link-description": "Скпопируйте ссылку для сотрудников. После регистрации по ссылке, сотрудник будет иметь доступ в Вашему Админ сайту.",
+    "address-edit": "Редактировать",
+    "address-delete": "Удалить",
+    "address-description": "Название",
+    "address-state": "Область",
+    "address-city": "Город",
+    "address-postalcode": "Индекс",
+    "address-street": "Улица",
+    "address-unit": "Номер дома",
+    "address-add": "добавить новый адрес",
+    "account-title": "Учетная запись:",
+    "logout": "выйти",
+    "save": "Сохранить",
+    "validation-summary": "Исправте ошибки перед сохранением!",
+    "snackbar-saved": "Сохранено",
+    "snackbar-close": "Закрыть"
+
+  },
+  "services": {
+    "title": "Улуги",
+    "service-title": "Наименование услуги",    
+    "service-title-description": "Адреса",
+    
+    "account": "Учетная запись",
+    "subscription": "Подписка",
+    "alias": "Идентификатор:",
+    "alias-description": "Идентификатор используется для ссылки на персональном сайте. Например, http://vegetable.com/[Идентификатор]",
+    "company-title": "Title:",
+    "company-title-description": "Название компании или бизнеса. Будет отображаться на персональном сайте.",
+    "company-description": "Описание:",
+    "company-description-description": "Описание компании или бизнеса. Будет отображаться на персональном сайте.",
+    "turn-on-personal-web-site": "Включить персональный сайт:",
+    "turn-on-personal-web-site-description": "Если включен, Ваш персональный сайт с функцией онлайн бронирования будет доступен по ссылке http://vegetable.com/[alias].",
+    "personal-web-site": "Персональный сайт:",
+    "personal-web-site-description": "Ссылка на Ваш персональный сайт.Сайте где клиенты могут бронировать Ваши услуги на основе Вашего графика.",
+    "invite-link": "Ссылка для приглашения:",
+    "invite-link-description": "Скпопируйте ссылку для сотрудников. После регистрации по ссылке, сотрудник будет иметь доступ в Вашему Админ сайту.",
+    "address-edit": "Редактировать",
+    "address-delete": "Удалить",
+    "address-description": "Название",
+    "address-state": "Область",
+    "address-city": "Город",
+    "address-postalcode": "Индекс",
+    "address-street": "Улица",
+    "address-unit": "Номер дома",
+    "address-add": "добавить новый адрес",
+    "account-title": "Учетная запись:",
+    "logout": "выйти",
+    "save": "Сохранить",
+    "validation-summary": "Исправте ошибки перед сохранением!",
+    "snackbar-saved": "Сохранено",
+    "snackbar-close": "Закрыть"
+
+  },
+  "validation": {
+    "required": "Обязательное поле",
+    "maxLength": "Превышена максимальная длина"
+  }
+
+}

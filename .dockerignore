@@ -1,0 +1,15 @@
+# Build output from the host. Copying it in would ship Windows-built binaries
+# into a Linux image and confuse the restore layer.
+**/bin/
+**/obj/
+
+**/.vs/
+**/.git/
+MigrationBackup/
+
+# Never let a credential into an image layer. Layers are cached, shared and
+# survive a later deletion of the file.
+**/firebase-service-account.json
+**/*.pfx
+**/*.pem
+**/appsettings.*.local.json

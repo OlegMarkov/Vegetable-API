@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Retargeted from .NET Framework 4.7.2 to net6.0.
+
+    Every other project in the solution was already net6.0; this one was the
+    last thing tying the API to Windows, and it was tying it there for no
+    reason. The 26 files here are plain entity classes whose only usings are
+    DataAnnotations, Linq and Collections.Generic — nothing Windows-specific
+    was ever in them. The old target was a leftover from before the .NET Core
+    migration that nothing revisited.
+
+    This also removes the need for Microsoft.NETFramework.ReferenceAssemblies,
+    which existed only to supply 4.7.2 reference assemblies on machines without
+    the Developer Pack.
+
+    Files are picked up by the SDK's default glob, so the explicit <Compile>
+    list is gone. It listed all 26 and would have to be edited by hand for
+    every new entity.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>Vegetable.Entities</RootNamespace>
+    <AssemblyName>Vegetable.Entities</AssemblyName>
+
+    <!-- Properties/AssemblyInfo.cs is still on disk from the old-style project,
+         and the SDK generates its own, which collides on every attribute.
+         Keeping the existing file rather than deleting it. -->
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+</Project>
